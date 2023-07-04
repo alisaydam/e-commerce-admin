@@ -1,10 +1,14 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { Modal } from "@/components/ui/modal";
 
 const SetupPage = () => {
   return (
-    <p>
-      <Button>This is a protected Route</Button>
-    </p>
+    <div>
+      <Modal title="Test" description="dwadwad" isOpen onClose={() => {}}>
+        ssssssssssssssssss
+      </Modal>
+    </div>
   );
 };
 
