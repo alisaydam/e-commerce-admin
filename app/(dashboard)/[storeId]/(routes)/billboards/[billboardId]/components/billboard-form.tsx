@@ -50,7 +50,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
   const title = initialData ? "Edit billboard" : "Create billboard";
   const description = initialData ? "Edit billboard" : "Add a new billboard";
-  const toastMessage = initialData ? "Edit updated" : "Billboard created";
+  const toastMessage = initialData ? "Billboard updated" : "Billboard created";
   const action = initialData ? "Save changes" : "Create";
 
   const form = useForm<BillboardFormValues>({
@@ -64,9 +64,17 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onSubmit = async (data: BillboardFormValues) => {
     try {
       setLoading(true);
-      await axios.patch(`/api/stores/${params.storeId}`, data);
+      if (initialData) {
+        await axios.patch(
+          `/api/${params.storeId}/billboards/${params.billboardId}`,
+          data
+        );
+      } else {
+        await axios.post(`/api/${params.storeId}/billboards`, data);
+      }
       router.refresh();
-      toast.success("Store updated.");
+      router.push(`/${params.storeId}/billboards`);
+      toast.success(toastMessage);
       console.log(data);
     } catch (error) {
       toast.error("Something went wrong!");
@@ -78,12 +86,14 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/stores/${params.storeId}`);
+      await axios.delete(
+        `/api/${params.storeId}/billboards/${params.billboardId}`
+      );
       router.refresh();
       router.push("/");
-      toast.success("Store deleted.");
+      toast.success("Billboard deleted.");
     } catch (error) {
-      toast.error("Make sure you removed all products and categories first");
+      toast.error("Make sure you removed all categories using this billboard");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -148,7 +158,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Store name"
+                        placeholder="Billboard name"
                         {...field}
                       />
                     </FormControl>
